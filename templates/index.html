@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Romokon - Today's Sales</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script>
+    function updateTotal() {
+      const q = id => parseInt(document.getElementById(id).value || 0);
+      const r = id => parseFloat(document.getElementById(id).value || 0);
+      const total = q("qty_1l")*r("rate_1l") + q("qty_500ml")*r("rate_500ml") +
+                    q("qty_2l")*r("rate_2l") + q("qty_pouch")*r("rate_pouch");
+      document.getElementById("total_display").textContent = "₹ " + total.toFixed(2);
+    }
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-primary mb-3">
+    <div class="container-fluid">
+      <span class="navbar-brand">Romokon</span>
+      <a href="/all" class="btn btn-light">Edit All Records</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <form action="/add" method="post" class="row g-3" oninput="updateTotal()">
+      <div class="col-12 col-md-6"><input type="text" name="name" class="form-control" placeholder="Customer Name" required></div>
+
+      <div class="col-6 col-md-2"><input type="number" name="qty_1l" id="qty_1l" class="form-control" placeholder="Qty 1L" required min="0"></div>
+      <div class="col-6 col-md-2"><input type="number" name="rate_1l" id="rate_1l" class="form-control" placeholder="Rate 1L" required min="0"></div>
+
+      <div class="col-6 col-md-2"><input type="number" name="qty_500ml" id="qty_500ml" class="form-control" placeholder="Qty 500ml" required min="0"></div>
+      <div class="col-6 col-md-2"><input type="number" name="rate_500ml" id="rate_500ml" class="form-control" placeholder="Rate 500ml" required min="0"></div>
+
+      <div class="col-6 col-md-2"><input type="number" name="qty_2l" id="qty_2l" class="form-control" placeholder="Qty 2L" required min="0"></div>
+      <div class="col-6 col-md-2"><input type="number" name="rate_2l" id="rate_2l" class="form-control" placeholder="Rate 2L" required min="0"></div>
+
+      <div class="col-6 col-md-2"><input type="number" name="qty_pouch" id="qty_pouch" class="form-control" placeholder="Qty Pouch" required min="0"></div>
+      <div class="col-6 col-md-2"><input type="number" name="rate_pouch" id="rate_pouch" class="form-control" placeholder="Rate Pouch" required min="0"></div>
+
+      <div class="col-md-3"><input type="number" name="cash" class="form-control" placeholder="Cash Paid" required min="0"></div>
+      <div class="col-md-3"><input type="number" name="due" class="form-control" placeholder="Due" required min="0"></div>
+      <div class="col-md-6"><input type="text" name="sign" class="form-control" placeholder="Sign / Notes" required></div>
+
+      <div class="col-12"><p><strong>Total:</strong> <span id="total_display">₹ 0.00</span></p></div>
+      <div class="col-12"><button class="btn btn-success w-100">Add Sale</button></div>
+    </form>
+
+    <hr>
+    <h4>Today's Sales - {{ date }}</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>ID</th><th>Date</th><th>Name</th>
+            <th>1L</th><th>@rate</th><th>500ml</th><th>@rate</th>
+            <th>2L</th><th>@rate</th><th>Pouch</th><th>@rate</th>
+            <th>Cash</th><th>Due</th><th>Sign</th><th>Total</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in records %}
+            {% set r = row.record %}
+            <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.date }}</td>
+                <td>{{ r.name }}</td>
+                <td>{{ r.qty_1l }}</td><td>₹{{ r.rate_1l }}</td>
+                <td>{{ r.qty_500ml }}</td><td>₹{{ r.rate_500ml }}</td>
+                <td>{{ r.qty_2l }}</td><td>₹{{ r.rate_2l }}</td>
+                <td>{{ r.qty_pouch }}</td><td>₹{{ r.rate_pouch }}</td>
+                <td>₹{{ r.cash }}</td><td>₹{{ r.due }}</td><td>{{ r.sign }}</td>
+                <td><strong>₹{{ row.total }}</strong></td>
+                <td>
+                <a href="/edit/{{ r.id }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="/delete/{{ r.id }}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+    <a href="/export" class="btn btn-outline-secondary mt-2">Export CSV</a>
+    <a href="/export/pdf" class="btn btn-outline-danger mt-2">Download PDF</a>
+  </div>
+</body>
+</html>

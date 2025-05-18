@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Romokon - All Sales</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-primary mb-3">
+    <div class="container-fluid">
+      <span class="navbar-brand">Romokon</span>
+      <a href="/" class="btn btn-light">Back to Today's Sales</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h4>All Sales Records</h4>
+
+    <!-- Date Filter Form -->
+    <form method="get" class="row g-3 mb-4">
+      <div class="col-md-4">
+        <input type="date" name="start_date" class="form-control" placeholder="Start Date" value="{{ start_date or '' }}">
+      </div>
+      <div class="col-md-4">
+        <input type="date" name="end_date" class="form-control" placeholder="End Date" value="{{ end_date or '' }}">
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-primary w-100">Filter</button>
+      </div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>ID</th><th>Date</th><th>Name</th>
+            <th>1L</th><th>@</th><th>500ml</th><th>@</th>
+            <th>2L</th><th>@</th><th>Pouch</th><th>@</th>
+            <th>Cash</th><th>Due</th><th>Sign</th><th>Total</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in records %}
+            {% set sale = r[0] %}
+            {% set total = r[1] %}
+            <tr>
+                <td>{{ sale.id }}</td>
+                <td>{{ sale.date }}</td>
+                <td>{{ sale.name }}</td>
+                <td>{{ sale.qty_1l }}</td><td>₹{{ sale.rate_1l }}</td>
+                <td>{{ sale.qty_500ml }}</td><td>₹{{ sale.rate_500ml }}</td>
+                <td>{{ sale.qty_2l }}</td><td>₹{{ sale.rate_2l }}</td>
+                <td>{{ sale.qty_pouch }}</td><td>₹{{ sale.rate_pouch }}</td>
+                <td>₹{{ sale.cash }}</td><td>₹{{ sale.due }}</td><td>{{ sale.sign }}</td>
+                <td><strong>₹{{ total }}</strong></td>
+                <td>
+                <a href="/edit/{{ sale.id }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="/delete/{{ sale.id }}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
