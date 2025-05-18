@@ -3,14 +3,15 @@ import csv
 from flask import Flask, render_template, request, redirect, url_for, send_file
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
+
 from sqlalchemy.orm import sessionmaker
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-
 app = Flask(__name__)
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///sales.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_4goh9zuOGjQR@ep-steep-haze-a4idiy36-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require")
+
 
 Base = declarative_base()
 engine = create_engine(DATABASE_URL, echo=False)
