@@ -16,15 +16,19 @@
   </script>
 </head>
 <body>
+  
   <nav class="navbar navbar-dark bg-primary mb-3">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-        Romokon
-      </a>
-      <a href="/all" class="btn btn-light">Edit All Records</a>
+  <div class="container-fluid d-flex justify-content-between">
+    <a class="navbar-brand" href="#">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+      Romokon
+    </a>
+    <div>
+      <a href="/all" class="btn btn-light me-2">Edit All Records</a>
+      <a href="/logout" class="btn btn-outline-light">Logout</a>
     </div>
-  </nav>
+  </div>
+</nav>
 
   <div class="container">
     <form action="/add" method="post" class="row g-3" oninput="updateTotal(); updateDue();">
