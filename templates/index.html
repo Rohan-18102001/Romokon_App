@@ -18,34 +18,60 @@
 <body>
   <nav class="navbar navbar-dark bg-primary mb-3">
     <div class="container-fluid">
-      <span class="navbar-brand">Romokon</span>
+      <a class="navbar-brand" href="#">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+        Romokon
+      </a>
       <a href="/all" class="btn btn-light">Edit All Records</a>
     </div>
   </nav>
 
   <div class="container">
-    <form action="/add" method="post" class="row g-3" oninput="updateTotal()">
-      <div class="col-12 col-md-6"><input type="text" name="name" class="form-control" placeholder="Customer Name" required></div>
+    <form action="/add" method="post" class="row g-3" oninput="updateTotal(); updateDue();">
+  <div class="col-12 col-md-6">
+    <input type="text" name="name" class="form-control" placeholder="Customer Name" required>
+  </div>
 
-      <div class="col-6 col-md-2"><input type="number" name="qty_1l" id="qty_1l" class="form-control" placeholder="Qty 1L" required min="0"></div>
-      <div class="col-6 col-md-2"><input type="number" name="rate_1l" id="rate_1l" class="form-control" placeholder="Rate 1L" required min="0"></div>
+  <div class="col-6 col-md-2"><input type="number" name="qty_1l" id="qty_1l" class="form-control" placeholder="Qty 1L" min="0"></div>
+  <div class="col-6 col-md-2"><input type="number" name="rate_1l" id="rate_1l" class="form-control" placeholder="Rate 1L" min="0"></div>
 
-      <div class="col-6 col-md-2"><input type="number" name="qty_500ml" id="qty_500ml" class="form-control" placeholder="Qty 500ml" required min="0"></div>
-      <div class="col-6 col-md-2"><input type="number" name="rate_500ml" id="rate_500ml" class="form-control" placeholder="Rate 500ml" required min="0"></div>
+  <div class="col-6 col-md-2"><input type="number" name="qty_500ml" id="qty_500ml" class="form-control" placeholder="Qty 500ml" min="0"></div>
+  <div class="col-6 col-md-2"><input type="number" name="rate_500ml" id="rate_500ml" class="form-control" placeholder="Rate 500ml" min="0"></div>
 
-      <div class="col-6 col-md-2"><input type="number" name="qty_2l" id="qty_2l" class="form-control" placeholder="Qty 2L" required min="0"></div>
-      <div class="col-6 col-md-2"><input type="number" name="rate_2l" id="rate_2l" class="form-control" placeholder="Rate 2L" required min="0"></div>
+  <div class="col-6 col-md-2"><input type="number" name="qty_2l" id="qty_2l" class="form-control" placeholder="Qty 2L" min="0"></div>
+  <div class="col-6 col-md-2"><input type="number" name="rate_2l" id="rate_2l" class="form-control" placeholder="Rate 2L" min="0"></div>
 
-      <div class="col-6 col-md-2"><input type="number" name="qty_pouch" id="qty_pouch" class="form-control" placeholder="Qty Pouch" required min="0"></div>
-      <div class="col-6 col-md-2"><input type="number" name="rate_pouch" id="rate_pouch" class="form-control" placeholder="Rate Pouch" required min="0"></div>
+  <div class="col-6 col-md-2"><input type="number" name="qty_pouch" id="qty_pouch" class="form-control" placeholder="Qty Pouch" min="0"></div>
+  <div class="col-6 col-md-2"><input type="number" name="rate_pouch" id="rate_pouch" class="form-control" placeholder="Rate Pouch" min="0"></div>
 
-      <div class="col-md-3"><input type="number" name="cash" class="form-control" placeholder="Cash Paid" required min="0"></div>
-      <div class="col-md-3"><input type="number" name="due" class="form-control" placeholder="Due" required min="0"></div>
-      <div class="col-md-6"><input type="text" name="sign" class="form-control" placeholder="Sign / Notes" required></div>
+  <div class="col-md-3"><input type="number" name="cash" id="cash" class="form-control" placeholder="Cash Paid" min="0"></div>
+  <div class="col-md-3"><input type="number" name="due" id="due" class="form-control" placeholder="Due" min="0" readonly></div>
 
-      <div class="col-12"><p><strong>Total:</strong> <span id="total_display">₹ 0.00</span></p></div>
-      <div class="col-12"><button class="btn btn-success w-100">Add Sale</button></div>
-    </form>
+  <div class="col-md-6"><input type="text" name="sign" class="form-control" placeholder="Sign / Notes" value="Nandkishore"></div>
+  <div class="col-md-6"><input type="number" name="short" class="form-control" placeholder="Previous Money Deposit" min="0"></div>
+
+  <div class="col-12"><p><strong>Total:</strong> <span id="total_display">₹ 0.00</span></p></div>
+  <div class="col-12"><button class="btn btn-success w-100">Add Sale</button></div>
+</form>
+
+<script>
+  function updateTotal() {
+    const q = id => parseInt(document.getElementById(id)?.value || 0);
+    const r = id => parseFloat(document.getElementById(id)?.value || 0);
+    const total = q("qty_1l")*r("rate_1l") + q("qty_500ml")*r("rate_500ml") +
+                  q("qty_2l")*r("rate_2l") + q("qty_pouch")*r("rate_pouch");
+    document.getElementById("total_display").textContent = "₹ " + total.toFixed(2);
+    return total;
+  }
+
+  function updateDue() {
+    const total = updateTotal();
+    const cash = parseInt(document.getElementById("cash")?.value || 0);
+    const due = Math.max(0, total - cash);
+    document.getElementById("due").value = due.toFixed(0);
+  }
+</script>
+
 
     <hr>
     <h4>Today's Sales - {{ date }}</h4>
@@ -53,35 +79,97 @@
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th>ID</th><th>Date</th><th>Name</th>
+            <th>Date & Time</th><th>Name</th>
             <th>1L</th><th>@rate</th><th>500ml</th><th>@rate</th>
             <th>2L</th><th>@rate</th><th>Pouch</th><th>@rate</th>
-            <th>Cash</th><th>Due</th><th>Sign</th><th>Total</th><th>Actions</th>
+            <th>Cash</th><th>Due</th><th>Deposit</th><th>Sign</th><th>Total</th><th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for row in records %}
             {% set r = row.record %}
             <tr>
-                <td>{{ r.id }}</td>
                 <td>{{ r.date }}</td>
                 <td>{{ r.name }}</td>
                 <td>{{ r.qty_1l }}</td><td>₹{{ r.rate_1l }}</td>
                 <td>{{ r.qty_500ml }}</td><td>₹{{ r.rate_500ml }}</td>
                 <td>{{ r.qty_2l }}</td><td>₹{{ r.rate_2l }}</td>
                 <td>{{ r.qty_pouch }}</td><td>₹{{ r.rate_pouch }}</td>
-                <td>₹{{ r.cash }}</td><td>₹{{ r.due }}</td><td>{{ r.sign }}</td>
+                <<td>₹{{ r.cash }}</td><td>₹{{ r.due }}</td><td>₹{{ r.prev_deposit }}</td><td>{{ r.sign }}</td>
                 <td><strong>₹{{ row.total }}</strong></td>
                 <td>
                 <a href="/edit/{{ r.id }}" class="btn btn-sm btn-warning">Edit</a>
                 <a href="/delete/{{ r.id }}" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
-            {% endfor %}
-
+          {% endfor %}
         </tbody>
       </table>
     </div>
+
+    <div class="mt-4">
+  <h5>Summary</h5>
+  <div class="row g-3">
+    <div class="col-md-3">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total 1L</h6>
+          <p class="card-text">{{ summary.qty_1l }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total 500ml</h6>
+          <p class="card-text">{{ summary.qty_500ml }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total 2L</h6>
+          <p class="card-text">{{ summary.qty_2l }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total Pouch</h6>
+          <p class="card-text">{{ summary.qty_pouch }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-success text-white shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total Cash</h6>
+          <p class="card-text">₹{{ summary.total_cash }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-danger text-white shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total Due</h6>
+          <p class="card-text">₹{{ summary.total_due }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-primary text-white shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total Revenue</h6>
+          <p class="card-text">₹{{ summary.total_revenue }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
     <a href="/export" class="btn btn-outline-secondary mt-2">Export CSV</a>
     <a href="/export/pdf" class="btn btn-outline-danger mt-2">Download PDF</a>
   </div>

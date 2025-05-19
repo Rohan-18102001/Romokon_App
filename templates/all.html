@@ -9,7 +9,10 @@
 <body>
   <nav class="navbar navbar-dark bg-primary mb-3">
     <div class="container-fluid">
-      <span class="navbar-brand">Romokon</span>
+      <a class="navbar-brand" href="#">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+        Romokon
+      </a>
       <a href="/" class="btn btn-light">Back to Today's Sales</a>
     </div>
   </nav>
@@ -34,10 +37,10 @@
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th>ID</th><th>Date</th><th>Name</th>
+            <th>Date & Time</th><th>Name</th>
             <th>1L</th><th>@</th><th>500ml</th><th>@</th>
             <th>2L</th><th>@</th><th>Pouch</th><th>@</th>
-            <th>Cash</th><th>Due</th><th>Sign</th><th>Total</th><th>Actions</th>
+            <th>Cash</th><th>Due</th><th>Deposit</th><th>Sign</th><th>Total</th><th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -45,26 +48,87 @@
             {% set sale = r[0] %}
             {% set total = r[1] %}
             <tr>
-                <td>{{ sale.id }}</td>
                 <td>{{ sale.date }}</td>
                 <td>{{ sale.name }}</td>
                 <td>{{ sale.qty_1l }}</td><td>₹{{ sale.rate_1l }}</td>
                 <td>{{ sale.qty_500ml }}</td><td>₹{{ sale.rate_500ml }}</td>
                 <td>{{ sale.qty_2l }}</td><td>₹{{ sale.rate_2l }}</td>
                 <td>{{ sale.qty_pouch }}</td><td>₹{{ sale.rate_pouch }}</td>
-                <td>₹{{ sale.cash }}</td><td>₹{{ sale.due }}</td><td>{{ sale.sign }}</td>
+                <td>₹{{ sale.cash }}</td><td>₹{{ sale.due }}</td><td>₹{{ sale.prev_deposit }}</td><td>{{ sale.sign }}</td>
                 <td><strong>₹{{ total }}</strong></td>
                 <td>
                 <a href="/edit/{{ sale.id }}" class="btn btn-sm btn-warning">Edit</a>
                 <a href="/delete/{{ sale.id }}" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
-            {% endfor %}
-
-
+          {% endfor %}
         </tbody>
       </table>
     </div>
+
+    <div class="mt-4">
+  <h5>Summary</h5>
+  <div class="row g-3">
+    <div class="col-md-3">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total 1L</h6>
+          <p class="card-text">{{ summary.qty_1l }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total 500ml</h6>
+          <p class="card-text">{{ summary.qty_500ml }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total 2L</h6>
+          <p class="card-text">{{ summary.qty_2l }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total Pouch</h6>
+          <p class="card-text">{{ summary.qty_pouch }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-success text-white shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total Cash</h6>
+          <p class="card-text">₹{{ summary.total_cash }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-danger text-white shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total Due</h6>
+          <p class="card-text">₹{{ summary.total_due }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-primary text-white shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Total Revenue</h6>
+          <p class="card-text">₹{{ summary.total_revenue }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   </div>
 </body>
 </html>
